@@ -1,5 +1,6 @@
 import pygame
 from minigame.constants import BLOCK_SIZE, SCOPE_INIT_RADIUS, RED_COLOR, BLACK_COLOR, WHITE_COLOR
+from minigame.board import board
 
 
 class Scope(object):
@@ -25,16 +26,24 @@ class Egg(object):
         self.scope = Scope()
 
     def move_left(self):
-        self.x -= self.speed
+        new_x = self.x - self.speed
+        if board.is_valid(new_x, self.y):
+            self.x = new_x
 
     def move_right(self):
-        self.x += self.speed
+        new_x = self.x + self.speed
+        if board.is_valid(new_x, self.y):
+            self.x = new_x
 
     def move_up(self):
-        self.y -= self.speed
+        new_y = self.y - self.speed
+        if board.is_valid(self.x, new_y):
+            self.y = new_y
 
     def move_down(self):
-        self.y += self.speed
+        new_y = self.y + self.speed
+        if board.is_valid(self.x, new_y):
+            self.y = new_y
 
     def move(self):
         keys = pygame.key.get_pressed()
