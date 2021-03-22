@@ -1,6 +1,8 @@
 import pygame
 from minigame.constants import BLOCK_SIZE, SCOPE_INIT_RADIUS, RED_COLOR, BLACK_COLOR, WHITE_COLOR
 from minigame.board import board
+from minigame.error import EggHitsSnakeError
+from minigame.utils import min_dist
 
 
 class Scope(object):
@@ -59,3 +61,7 @@ class Egg(object):
     def draw(self, window):
         self.scope.draw(window, self)
         pygame.draw.circle(window, self.color, (self.x, self.y), BLOCK_SIZE // 2)
+
+    def hit_snake(self, snake):
+        if min_dist(snake, self) < BLOCK_SIZE:
+            raise EggHitsSnakeError("Egg hits snake!")

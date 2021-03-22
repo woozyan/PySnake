@@ -1,7 +1,8 @@
 import pygame
 from minigame.constants import SNAKE_INIT_LEN, BLACK_COLOR, BLOCK_SIZE
 from minigame.board import board
-from minigame.error import SnakeHitsItselfError, SnakeHitsBoundaryError
+from minigame.error import SnakeHitsItselfError, SnakeHitsBoundaryError, SnakeEatsEggError
+from minigame.utils import dist
 
 
 class SnakeNode(object):
@@ -127,3 +128,7 @@ class Snake(object):
             visited.add((node.x, node.y))
             node = node.next
         return False
+
+    def eat_egg(self, egg):
+        if dist(self, egg) < BLOCK_SIZE:
+            raise SnakeEatsEggError("Snake eats the egg!")
