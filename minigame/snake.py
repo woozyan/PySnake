@@ -1,5 +1,7 @@
 import pygame
 from minigame.constants import SNAKE_INIT_LEN, BLACK_COLOR, BLOCK_SIZE
+from minigame.board import board
+from minigame.error import SnakeHitsItselfError, SnakeHitsBoundaryError
 
 
 class SnakeNode(object):
@@ -107,3 +109,21 @@ class Snake(object):
         while node:
             node.move()
             node = node.next
+
+        if self.hit_self():
+            raise SnakeHitsItselfError("Snake hits itself!")
+        if self.hit_board():
+            raise SnakeHitsBoundaryError("Snake hits boundary!")
+
+    def hit_board(self):
+        return not board.is_valid(self.head.x, self.head.y)
+
+    def hit_self(self):
+        visited = set()
+        node = self.head
+        while node:
+            if (node.x, node.y) in visited:
+                return True
+            visited.add((node.x, node.y))
+            node = node.next
+        return False
