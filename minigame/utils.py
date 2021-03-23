@@ -1,9 +1,10 @@
 import math
+from minigame.constants import BLOCK_SIZE
 
 
 def dist(snake, egg):
     head = snake.head
-    return math.sqrt(math.pow(head.x - egg.x, 2) + math.pow(head.y - egg.y, 2))
+    return math.sqrt(math.pow(head.x + BLOCK_SIZE/2 - egg.x, 2) + math.pow(head.y + BLOCK_SIZE/2 - egg.y, 2))
 
 
 def min_dist(snake, egg):

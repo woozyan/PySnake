@@ -1,7 +1,7 @@
 import pygame
-from minigame.constants import SNAKE_INIT_LEN, BLACK_COLOR, BLOCK_SIZE
+from minigame.constants import SNAKE_INIT_LEN, BLACK_COLOR, RED_COLOR, BLOCK_SIZE, N_SPEED
 from minigame.board import board
-from minigame.error import SnakeHitsItselfError, SnakeHitsBoundaryError, SnakeEatsEggError
+from minigame.error import SnakeHitsItselfError, SnakeHitsBoundaryError, SnakeSpeedZeroError
 from minigame.utils import dist
 
 
@@ -9,40 +9,48 @@ class SnakeNode(object):
 
     def __init__(self, x, y, parent):
         self.x = x
-        self.x_prev = None
         self.y = y
-        self.y_prev = None
         self.parent = parent
         self.next = None
-        self.x_speed = 0
-        self.y_speed = BLOCK_SIZE
         self.color = BLACK_COLOR
 
-    def move(self):
-        self.x_prev = self.x
-        self.y_prev = self.y
-        if self.parent is None:
-            self.x += self.x_speed
-            self.y += self.y_speed
-        else:
-            self.x = self.parent.x_prev
-            self.y = self.parent.y_prev
+    def draw(self, window):
+        pygame.draw.rect(window, self.color, (self.x, self.y, BLOCK_SIZE, BLOCK_SIZE))
+
+
+class SnakeHead(SnakeNode):
+    def __init__(self, x, y):
+        super().__init__(x, y, None)
+        self.x_speed = 0
+        self.y_speed = N_SPEED
+        self.color = RED_COLOR
+
+    def set_speed(self, new_speed):
+        if new_speed == 0:
+            raise SnakeSpeedZeroError()
+        if self.x_speed:
+            self.x_speed = abs(new_speed) if self.x_speed > 0 else -1 * abs(new_speed)
+        if self.y_speed:
+            self.y_speed = abs(new_speed) if self.y_speed > 0 else -1 * abs(new_speed)
+
+    def draw(self, window):
+        pygame.draw.rect(window, self.color, (self.x, self.y, 1.1 * BLOCK_SIZE, 1.1 * BLOCK_SIZE))
 
 
 class Snake(object):
 
     def __init__(self, x, y):
-        self.head = SnakeNode(x, y, parent=None)
+        self.head = SnakeHead(x, y)
         self.tail = self.head
-        self.build_snake(length=SNAKE_INIT_LEN)
+        self.init_snake(length=SNAKE_INIT_LEN)
         self.length = SNAKE_INIT_LEN
 
-    def build_snake(self, length):
+    def init_snake(self, length):
         parent = self.head
         x, y = parent.x, parent.y
         node = self.tail
         for i in range(1, length):
-            node = SnakeNode(x, y-i*BLOCK_SIZE, parent)
+            node = SnakeNode(x, y - i * BLOCK_SIZE, parent)
             parent.next = node
             parent = node
         self.tail = node
@@ -51,7 +59,7 @@ class Snake(object):
     def draw(self, window):
         node = self.head
         while node:
-            pygame.draw.rect(window, node.color, (node.x, node.y, BLOCK_SIZE, BLOCK_SIZE))
+            node.draw(window)
             node = node.next
         return
 
@@ -59,8 +67,6 @@ class Snake(object):
         head = self.head
         if head.y_speed != 0:
             return
-        head.x_speed_prev = head.x_speed
-        head.y_speed_prev = head.y_speed
         head.y_speed = abs(head.x_speed)
         head.x_speed = 0
         return
@@ -69,8 +75,6 @@ class Snake(object):
         head = self.head
         if head.y_speed != 0:
             return
-        head.x_speed_prev = head.x_speed
-        head.y_speed_prev = head.y_speed
         head.y_speed = -1 * abs(head.x_speed)
         head.x_speed = 0
         return
@@ -79,8 +83,6 @@ class Snake(object):
         head = self.head
         if head.x_speed != 0:
             return
-        head.x_speed_prev = head.x_speed
-        head.y_speed_prev = head.y_speed
         head.x_speed = abs(head.y_speed)
         head.y_speed = 0
         return
@@ -89,11 +91,27 @@ class Snake(object):
         head = self.head
         if head.x_speed != 0:
             return
-        head.x_speed_prev = head.x_speed
-        head.y_speed_prev = head.y_speed
         head.x_speed = -1 * abs(head.y_speed)
         head.y_speed = 0
         return
+
+    def straight_snake(self):
+        head = self.head
+        head.x += head.x_speed * BLOCK_SIZE
+        head.y += head.y_speed * BLOCK_SIZE
+        node = self.head.next
+        i = 1
+        while i < self.length:
+            if head.x_speed:
+                node.x = head.x + i * BLOCK_SIZE if head.x_speed < 0 else head.x - i * BLOCK_SIZE
+            else:
+                node.x = head.x
+            if head.y_speed:
+                node.y = head.y + i * BLOCK_SIZE if head.y_speed < 0 else head.y - i * BLOCK_SIZE
+            else:
+                node.y = head.y
+            node = node.next
+            i += 1
 
     def move(self):
         keys = pygame.key.get_pressed()
@@ -106,15 +124,44 @@ class Snake(object):
         elif keys[pygame.K_RIGHT]:
             self.move_right()
 
-        node = self.head
-        while node:
-            node.move()
-            node = node.next
+        head = self.head
+        n_speed = abs(head.x_speed) or abs(head.y_speed)
+
+        if self.length <= n_speed:
+            self.straight_snake()
+        else:
+            node = self.tail
+            count = 0
+            while count < n_speed:
+                node = node.parent
+                count += 1
+            tail = self.tail
+            while node:
+                tail.x = node.x
+                tail.y = node.y
+                node = node.parent
+                tail = tail.parent
+            head = self.head
+            head.x += head.x_speed * BLOCK_SIZE
+            head.y += head.y_speed * BLOCK_SIZE
+            node = head.next
+            i = 1
+            while i < n_speed:
+                if head.x_speed:
+                    node.x = head.x + i * BLOCK_SIZE if head.x_speed < 0 else head.x - i * BLOCK_SIZE
+                else:
+                    node.x = head.x
+                if head.y_speed:
+                    node.y = head.y + i * BLOCK_SIZE if head.y_speed < 0 else head.y - i * BLOCK_SIZE
+                else:
+                    node.y = head.y
+                node = node.next
+                i += 1
 
         if self.hit_self():
-            raise SnakeHitsItselfError("Snake hits itself!")
+            raise SnakeHitsItselfError()
         if self.hit_board():
-            raise SnakeHitsBoundaryError("Snake hits boundary!")
+            raise SnakeHitsBoundaryError()
 
     def hit_board(self):
         return not board.is_valid(self.head.x, self.head.y)
@@ -130,5 +177,19 @@ class Snake(object):
         return False
 
     def eat_egg(self, egg):
-        if dist(self, egg) < BLOCK_SIZE:
-            raise SnakeEatsEggError("Snake eats the egg!")
+        if dist(self, egg) > 1.5 * BLOCK_SIZE:
+            return False
+        tail = self.tail
+        new_tail = SnakeNode(tail.x, tail.y, tail)
+        tail.next = new_tail
+        self.tail = new_tail
+        self.length += 1
+        return True
+
+    def __repr__(self):
+        body = []
+        node = self.head
+        while node:
+            body.append((node.x, node.y))
+            node = node.next
+        return f"Snake({body})"
