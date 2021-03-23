@@ -3,7 +3,7 @@ Y_SIZE = 500
 CAPTION = "Woozyan's Mini Game"
 BLOCK_SIZE = 10
 SNAKE_INIT_LEN = 5
-N_SPEED = 2
+N_SPEED = 1
 EGG_SCOPE = False
 SCOPE_INIT_RADIUS = 60
 BLACK_COLOR = (0, 0, 0)
@@ -15,3 +15,6 @@ GREEN_COLOR = (0, 255, 0)
 # Server part config
 IP = "127.0.0.1"
 PORT = 5555
+ONE_BYTE = 8
+ONE_KB = 8 * 1024
+ONE_MB = 8 * 1024 * 1024

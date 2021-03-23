@@ -1,5 +1,5 @@
 import pygame
-from minigame.constants import SNAKE_INIT_LEN, BLACK_COLOR, RED_COLOR, BLOCK_SIZE, N_SPEED
+from minigame.constants import SNAKE_INIT_LEN, BLACK_COLOR, BLOCK_SIZE, N_SPEED
 from minigame.board import board
 from minigame.error import SnakeHitsItselfError, SnakeHitsBoundaryError, SnakeSpeedZeroError
 from minigame.utils import dist
@@ -22,8 +22,11 @@ class SnakeHead(SnakeNode):
     def __init__(self, x, y):
         super().__init__(x, y, None)
         self.x_speed = 0
-        self.y_speed = N_SPEED
-        self.color = RED_COLOR
+        self.y_speed = 0
+        self.color = BLACK_COLOR
+
+    def init_speed(self, n_speed):
+        self.y_speed = n_speed
 
     def set_speed(self, new_speed):
         if new_speed == 0:
@@ -115,6 +118,9 @@ class Snake(object):
 
     def move(self):
         keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            self.init_speed(N_SPEED)
+            return
         if keys[pygame.K_UP]:
             self.move_up()
         elif keys[pygame.K_DOWN]:
@@ -185,6 +191,12 @@ class Snake(object):
         self.tail = new_tail
         self.length += 1
         return True
+
+    def set_speed(self, n_speed):
+        self.head.set_speed(n_speed)
+
+    def init_speed(self, n_speed):
+        self.head.init_speed(n_speed)
 
     def __repr__(self):
         body = []
