@@ -1,7 +1,7 @@
 import pygame
 from network import Network
-from minigame.egg import Egg
-from minigame.constants import X_SIZE, Y_SIZE, CAPTION, WHITE_COLOR
+from pysnake.egg import Egg
+from pysnake.constants import X_SIZE, Y_SIZE, CAPTION, WHITE_COLOR
 
 width = X_SIZE
 height = Y_SIZE

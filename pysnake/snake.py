@@ -1,9 +1,9 @@
 import pygame
 import time
-from minigame.constants import SNAKE_INIT_LEN, BLACK_COLOR, BLOCK_SIZE, N_SPEED
-from minigame.board import board
-from minigame.error import SnakeHitsItselfError, SnakeHitsBoundaryError, SnakeSpeedZeroError
-from minigame.utils import dist
+from pysnake.constants import SNAKE_INIT_LEN, BLACK_COLOR, BLOCK_SIZE, N_SPEED
+from pysnake.board import board
+from pysnake.error import SnakeHitsItselfError, SnakeHitsBoundaryError, SnakeSpeedZeroError
+from pysnake.utils import dist
 
 
 class SnakeNode(object):

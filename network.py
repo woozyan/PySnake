@@ -1,6 +1,6 @@
 import socket
 import pickle
-from minigame.constants import IP, PORT, ONE_KB, ONE_MB
+from pysnake.constants import IP, PORT, ONE_KB, ONE_MB
 
 
 class Network:

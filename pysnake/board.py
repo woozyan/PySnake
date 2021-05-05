@@ -1,4 +1,4 @@
-from minigame.constants import X_SIZE, Y_SIZE, BLOCK_SIZE
+from pysnake.constants import X_SIZE, Y_SIZE, BLOCK_SIZE
 
 
 class Board(object):

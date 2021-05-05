@@ -1,10 +1,10 @@
 import pygame
 import random
 from datetime import datetime, timedelta
-from minigame.constants import X_SIZE, Y_SIZE, CAPTION, WHITE_COLOR
-from minigame.snake import Snake
-from minigame.egg import Egg
-from minigame.utils import random_pos
+from pysnake.constants import X_SIZE, Y_SIZE, CAPTION, WHITE_COLOR
+from pysnake.snake import Snake
+from pysnake.egg import Egg
+from pysnake.utils import random_pos
 
 
 class Game(object):

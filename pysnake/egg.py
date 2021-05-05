@@ -1,8 +1,8 @@
 import pygame
-from minigame.constants import BLOCK_SIZE, SCOPE_INIT_RADIUS, BLACK_COLOR, WHITE_COLOR, N_SPEED
-from minigame.board import board
-from minigame.error import EggHitsSnakeError
-from minigame.utils import min_dist, random_rgb
+from pysnake.constants import BLOCK_SIZE, SCOPE_INIT_RADIUS, BLACK_COLOR, WHITE_COLOR, N_SPEED
+from pysnake.board import board
+from pysnake.error import EggHitsSnakeError
+from pysnake.utils import min_dist, random_rgb
 
 
 class Scope(object):

@@ -2,9 +2,9 @@ import socket
 import random
 import pickle
 from _thread import *
-from minigame.snake import Snake
-from minigame.egg import Egg
-from minigame.constants import IP, PORT, X_SIZE, Y_SIZE, BLOCK_SIZE
+from pysnake.snake import Snake
+from pysnake.egg import Egg
+from pysnake.constants import IP, PORT, X_SIZE, Y_SIZE, BLOCK_SIZE
 
 
 server = IP
