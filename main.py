@@ -4,6 +4,7 @@ import random
 from minigame.constants import X_SIZE, Y_SIZE, CAPTION, WHITE_COLOR
 from minigame.snake import Snake
 from minigame.egg import Egg
+from minigame.utils import random_pos
 
 
 window = pygame.display.set_mode((X_SIZE, Y_SIZE))
@@ -19,8 +20,9 @@ def draw_window(window, snake, egg):
 
 def main():
     running = True
-    snake = Snake(250, 250)
-    egg = Egg(100, 100)
+    snake = Snake(250, 250, 20)
+    egg = Egg(100, 100, 20, 0.5)
+    start_time = time.time()
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -28,9 +30,11 @@ def main():
                 pygame.quit()
 
         snake.move()
-        if snake.eat_egg(egg):
-            egg = Egg(random.randint(0, X_SIZE), random.randint(0, X_SIZE))
-        # egg.move()
+        if egg.hit_snake(snake):
+            snake.grow(egg)
+            x, y = random_pos(egg.block_size, egg.block_size, X_SIZE - egg.block_size, Y_SIZE - egg.block_size)
+            egg = Egg(x, y, block_size=egg.block_size, n_speed=1.1 * egg.n_speed)
+        egg.move()
         draw_window(window, snake, egg)
         time.sleep(0.1)
 

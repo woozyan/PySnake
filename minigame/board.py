@@ -1,5 +1,4 @@
-import pygame
-from minigame.constants import X_SIZE, Y_SIZE
+from minigame.constants import X_SIZE, Y_SIZE, BLOCK_SIZE
 
 
 class Board(object):
@@ -8,7 +7,7 @@ class Board(object):
         self.y = Y_SIZE
 
     def is_valid(self, x, y):
-        return 0 <= x <= self.x and 0 <= y <= self.y
+        return BLOCK_SIZE / 2 <= x < self.x - BLOCK_SIZE / 2 and BLOCK_SIZE / 2 < y < self.y - BLOCK_SIZE / 2
 
 
 board = Board()

@@ -4,7 +4,7 @@ import pickle
 from _thread import *
 from minigame.snake import Snake
 from minigame.egg import Egg
-from minigame.constants import IP, PORT
+from minigame.constants import IP, PORT, X_SIZE, Y_SIZE, BLOCK_SIZE
 
 
 server = IP
@@ -37,6 +37,10 @@ def threaded_client(conn, player):
                 print("Disconnected")
                 break
             else:
+                if players[0].eat_egg(players[1]):
+                    scope_size = players[1].scope.radius
+                    players[1] = Egg(random.randint(BLOCK_SIZE, X_SIZE - BLOCK_SIZE),
+                                     random.randint(BLOCK_SIZE, Y_SIZE - BLOCK_SIZE), scope_size=0.8 * scope_size)
                 if player == 1:
                     reply = players[0]
                 else:
