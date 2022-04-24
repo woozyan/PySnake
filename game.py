@@ -7,6 +7,7 @@ from pysnake.egg import Egg
 from pysnake.utils import random_pos
 
 
+
 class Game(object):
     def __init__(self, game_id, players):
         self.game_id = game_id
